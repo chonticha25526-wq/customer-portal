@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบส่งเอกสาร</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; max-width: 500px; margin: 30px auto; background-color: #f4f7f9; }
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; margin-top: 0; }
+        label { display: block; margin-top: 10px; font-weight: bold; color: #555; }
+        input { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
+        button { width: 100%; padding: 12px; margin-top: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #result { margin-top: 15px; padding: 10px; background: #e9ecef; border-radius: 5px; font-family: monospace; white-space: pre-wrap; word-break: break-all; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>ส่งเรื่องขออนุมัติเอกสาร</h2>
+        
+        <label>รหัสเอกสาร</label>
+        <input type="text" id="doc_id" placeholder="เช่น DOC-001">
+
+        <label>ชื่อเอกสาร</label>
+        <input type="text" id="title" placeholder="เช่น ขออนุมัติงบโครงการ">
+
+        <label>ชื่อผู้ส่ง</label>
+        <input type="text" id="sender" placeholder="ชื่อของคุณ">
+
+        <label>ผู้อนุมัติ</label>
+        <input type="text" id="next_approver" placeholder="ชื่อหัวหน้างาน">
+
+        <button onclick="submitDoc()">ส่งเอกสาร</button>
+
+        <div id="result">สถานะจะแสดงที่นี่...</div>
+    </div>
+
+    <script>
+        async function submitDoc() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerText = "กำลังส่งข้อมูล...";
+
+            // เปลี่ยน URL นี้เป็น URL ของ Render ที่คุณได้มา
+            const API_URL = "https://your-app.onrender.com/documents/submit"; 
+
+            const data = {
+                doc_id: document.getElementById('doc_id').value,
+                title: document.getElementById('title').value,
+                sender: document.getElementById('sender').value,
+                current_status: "Pending",
+                next_approver: document.getElementById('next_approver').value
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                resultDiv.innerText = "สำเร็จ!\n" + JSON.stringify(result, null, 2);
+            } catch (error) {
+                resultDiv.innerText = "เกิดข้อผิดพลาด: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
